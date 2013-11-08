@@ -1,11 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 
 namespace MazeGen
 {
     public class Node
     {
+        private bool _isBacktracked;
+        private bool _isStart;
+        private Point _pos;
+        private int _count = 4;
+        private Node _down;
+        private Node _up;
+        private Node _right;
+        private Node _left;
 
         /// <summary>
         /// Status of the four wall
@@ -86,11 +95,6 @@ namespace MazeGen
             }
         }
 
-        private Node _down;
-        private Node _up;
-        private Node _right;
-        private Node _left;
-
         public Node Left
         {
             get
@@ -133,6 +137,61 @@ namespace MazeGen
             set
             {
                 _down = value;
+            }
+        }
+        public int Count
+        {
+            get
+            {
+                return _count;
+            }
+            set
+            {
+                _count = value;
+            }
+        }
+        public int Wall
+        {
+            get
+            {
+                return _wall;
+            }
+            set
+            {
+                _wall = value;
+            }
+        }
+        public bool isStart
+        {
+            get
+            {
+                return _isStart;
+            }
+            set
+            {
+                _isStart = value;
+            }
+        }
+        public Point Pos
+        {
+            get
+            {
+                return _pos;
+            }
+            set
+            {
+                _pos = value;
+            }
+        }
+        public bool isBacktracked
+        {
+            get
+            {
+                return _isBacktracked;
+            }
+            set
+            {
+                _isBacktracked = value;
             }
         }
     }

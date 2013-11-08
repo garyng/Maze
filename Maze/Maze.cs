@@ -13,6 +13,11 @@ namespace MazeGen
 {
     public abstract class Maze
     {
+        public delegate void ProgressChangedEventHandler(int done, int total);
+        public delegate void DoneEventHandler();
+        public event ProgressChangedEventHandler ProgressChanged;
+        public event DoneEventHandler Completed;
+
         private List<List<Node>> _nodes = new List<List<Node>>();
 
         public Maze(List<List<Node>> nodes)
@@ -33,6 +38,7 @@ namespace MazeGen
                 for (int y = 0; y < height; y++)
                 {
                     Node nY = new Node();
+                    nY.Pos = new Point(x, y);
                     if (y > 0)
                     {
                         nY.Up = nX[y - 1];
@@ -63,34 +69,54 @@ namespace MazeGen
                 {
                     for (int y = 0; y < _nodes[x].Count; y++)
                     {
-                        using (GraphicsPath gp = new GraphicsPath())
+                        if (!_nodes[x][y].GetWall(0))
                         {
-                            gp.StartFigure();
-                            if (!_nodes[x][y].GetWall(0))
-                            {
-                                gp.AddLine(sz.Height * x, sz.Width * y, sz.Height * (x + 1), sz.Width * y);   //Up
-                            }
-                            if (!_nodes[x][y].GetWall(3))
-                            {
-                                gp.AddLine(sz.Height * x, sz.Width * y, sz.Height * x, sz.Width * (y + 1));   //Left
-                            }
-
-                            gp.StartFigure();
-                            if (!_nodes[x][y].GetWall(1))
-                            {
-                                gp.AddLine(sz.Height * (x + 1), y, sz.Height * (x + 1), sz.Width * (y + 1));   //Right
-                            }
-                            if (!_nodes[x][y].GetWall(2))
-                            {
-                                gp.AddLine(sz.Height * x, sz.Width * (y + 1), sz.Height * (x + 1), sz.Width * (y + 1)); //Down
-                            }
-                            g.DrawPath(Pens.Black, gp);
-                        };
-
+                            //Up
+                            g.DrawLine(Pens.Black, sz.Height * x, sz.Width * y, sz.Height * (x + 1), sz.Width * y);
+                        }
+                        if (!_nodes[x][y].GetWall(3))
+                        {
+                            //Left
+                            g.DrawLine(Pens.Black, sz.Height * x, sz.Width * y, sz.Height * x, sz.Width * (y + 1));
+                        }
+                        if (!_nodes[x][y].GetWall(1))
+                        {
+                            //Right
+                            g.DrawLine(Pens.Black, sz.Height * (x + 1), sz.Width * y, sz.Height * (x + 1), sz.Width * (y + 1));
+                        }
+                        if (!_nodes[x][y].GetWall(2))
+                        {
+                            //Down
+                            g.DrawLine(Pens.Black, sz.Height * x, sz.Width * (y + 1), sz.Height * (x + 1), sz.Width * (y + 1));
+                        }
+                        if (_nodes[x][y].isStart)
+                        {
+                            g.FillRectangle(new SolidBrush(Color.FromArgb(100, Color.Blue)), sz.Height * x, sz.Width * y, sz.Width, sz.Height);
+                        }
+                        if (_nodes[x][y].isBacktracked)
+                        {
+                            g.FillRectangle(new SolidBrush(Color.FromArgb(100, Color.Pink)), sz.Height * x, sz.Width * y, sz.Width, sz.Height);
+                        }
                     }
                 }
             };
             return b;
+        }
+
+        protected virtual void OnProgressChanged(int done, int total)
+        {
+            if (ProgressChanged != null)
+            {
+                ProgressChanged(done, total);
+            }
+        }
+
+        protected virtual void OnComplete()
+        {
+            if (Completed != null)
+            {
+                Completed();
+            }
         }
 
         /// <summary>
@@ -110,30 +136,6 @@ namespace MazeGen
                 return _nodes;
             }
         }
-    }
 
-    public class MazeRec : Maze
-    {
-        public MazeRec(List<List<Node>> nodes)
-            : base(nodes)
-        {
-        }
-
-        /// <summary>
-        /// Initialize a new 2d array of nodes
-        /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        public MazeRec(int width, int height)
-            : base(width, height)
-        {    
-        }
-
-        public override void Generate()
-        {
-            int visited = 0;
-            int total = this.Nodes.Count * this.Nodes[0].Count;
-
-        }
     }
 }

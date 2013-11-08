@@ -28,30 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnVisual = new System.Windows.Forms.Button();
             this.pnlCon = new System.Windows.Forms.Panel();
             this.picVisual = new System.Windows.Forms.PictureBox();
+            this.btnGenRec = new System.Windows.Forms.Button();
+            this.pbProgress = new System.Windows.Forms.ProgressBar();
             this.pnlCon.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picVisual)).BeginInit();
             this.SuspendLayout();
             // 
-            // btnVisual
-            // 
-            this.btnVisual.Location = new System.Drawing.Point(205, 12);
-            this.btnVisual.Name = "btnVisual";
-            this.btnVisual.Size = new System.Drawing.Size(75, 35);
-            this.btnVisual.TabIndex = 1;
-            this.btnVisual.Text = "Visualize";
-            this.btnVisual.UseVisualStyleBackColor = true;
-            this.btnVisual.Click += new System.EventHandler(this.btnVisual_Click);
-            // 
             // pnlCon
             // 
+            this.pnlCon.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlCon.AutoScroll = true;
             this.pnlCon.Controls.Add(this.picVisual);
             this.pnlCon.Location = new System.Drawing.Point(12, 70);
             this.pnlCon.Name = "pnlCon";
-            this.pnlCon.Size = new System.Drawing.Size(268, 184);
+            this.pnlCon.Size = new System.Drawing.Size(290, 232);
             this.pnlCon.TabIndex = 2;
             // 
             // picVisual
@@ -63,13 +57,33 @@
             this.picVisual.TabIndex = 1;
             this.picVisual.TabStop = false;
             // 
+            // btnGenRec
+            // 
+            this.btnGenRec.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.btnGenRec.Location = new System.Drawing.Point(227, 12);
+            this.btnGenRec.Name = "btnGenRec";
+            this.btnGenRec.Size = new System.Drawing.Size(75, 52);
+            this.btnGenRec.TabIndex = 3;
+            this.btnGenRec.Text = "Recursive Backtracker ";
+            this.btnGenRec.UseVisualStyleBackColor = true;
+            this.btnGenRec.Click += new System.EventHandler(this.btnGen_Click);
+            // 
+            // pbProgress
+            // 
+            this.pbProgress.Location = new System.Drawing.Point(12, 310);
+            this.pbProgress.Name = "pbProgress";
+            this.pbProgress.Size = new System.Drawing.Size(290, 23);
+            this.pbProgress.TabIndex = 4;
+            this.pbProgress.Visible = false;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 266);
+            this.ClientSize = new System.Drawing.Size(314, 345);
+            this.Controls.Add(this.pbProgress);
+            this.Controls.Add(this.btnGenRec);
             this.Controls.Add(this.pnlCon);
-            this.Controls.Add(this.btnVisual);
             this.Name = "frmMain";
             this.Text = "Maze";
             this.Load += new System.EventHandler(this.frmMain_Load);
@@ -82,9 +96,10 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnVisual;
         private System.Windows.Forms.Panel pnlCon;
         private System.Windows.Forms.PictureBox picVisual;
+        private System.Windows.Forms.Button btnGenRec;
+        private System.Windows.Forms.ProgressBar pbProgress;
     }
 }
 
