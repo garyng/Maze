@@ -27,6 +27,16 @@ namespace MazeGen
         }
 
         /// <summary>
+        /// Get a wall's status
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns>True = Wall destroyed </returns>
+        public bool GetWall(int index)
+        {
+            return (_wall & (1 << index)) == (1 << index);
+        }
+
+        /// <summary>
         /// Mark the wall as not destroyed
         /// </summary>
         /// <param name="index"></param>
