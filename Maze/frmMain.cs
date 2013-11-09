@@ -24,6 +24,8 @@ namespace MazeGen
         {
             _buttons.Add(btnGenPrim);
             _buttons.Add(btnGenRec);
+            sntHeight.Text = "10";
+            sntWidth.Text = "10";
         }
 
         void ToggleButtonState(bool isEnabled)
@@ -33,12 +35,12 @@ namespace MazeGen
 
         private void btnGenRec_Click(object sender, EventArgs e)
         {
-            VisualizeMaze(new MazeRec(10, 10));
+            VisualizeMaze(new MazeRec(Convert.ToInt32(sntWidth.Text), Convert.ToInt32(sntHeight.Text)));
         }
 
         private void btnGenPrim_Click(object sender, EventArgs e)
         {
-            VisualizeMaze(new MazePrim(20, 20));
+            VisualizeMaze(new MazePrim(Convert.ToInt32(sntWidth.Text), Convert.ToInt32(sntHeight.Text)));
         }
 
         private void VisualizeMaze(Maze maze)
