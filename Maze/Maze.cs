@@ -89,15 +89,20 @@ namespace MazeGen
                             //Down
                             g.DrawLine(Pens.Black, sz.Height * x, sz.Width * (y + 1), sz.Height * (x + 1), sz.Width * (y + 1));
                         }
-                        if (_nodes[x][y].isStart)
-                        {
-                            g.FillRectangle(new SolidBrush(Color.FromArgb(100, Color.Blue)), sz.Height * x, sz.Width * y, sz.Width, sz.Height);
-                        }
                         if (_nodes[x][y].isBacktracked)
                         {
                             g.FillRectangle(new SolidBrush(Color.FromArgb(100, Color.Pink)), sz.Height * x, sz.Width * y, sz.Width, sz.Height);
                         }
+                        if (_nodes[x][y].isFrontier)
+                        {
+                            g.FillRectangle(new SolidBrush(Color.FromArgb(100, Color.Purple)), sz.Height * x, sz.Width * y, sz.Width, sz.Height);
+                        }
+                        if (_nodes[x][y].isStart)
+                        {
+                            g.FillRectangle(new SolidBrush(Color.FromArgb(100, Color.Blue)), sz.Height * x, sz.Width * y, sz.Width, sz.Height);
+                        }
                     }
+
                 }
             };
             return b;

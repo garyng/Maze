@@ -19,20 +19,36 @@ namespace MazeGen
             InitializeComponent();
         }
 
-        
+        List<Button> _buttons = new List<Button>();
         private void frmMain_Load(object sender, EventArgs e)
         {
-
+            _buttons.Add(btnGenPrim);
+            _buttons.Add(btnGenRec);
         }
 
-        private void btnGen_Click(object sender, EventArgs e)
+        void ToggleButtonState(bool isEnabled)
         {
-            MazeRec mr = new MazeRec(50,50);
+            _buttons.ForEach(item => item.Enabled = isEnabled);
+        }
+
+        private void btnGenRec_Click(object sender, EventArgs e)
+        {
+            VisualizeMaze(new MazeRec(10, 10));
+        }
+
+        private void btnGenPrim_Click(object sender, EventArgs e)
+        {
+            VisualizeMaze(new MazePrim(20, 20));
+        }
+
+        private void VisualizeMaze(Maze maze)
+        {
+            ToggleButtonState(false);
             List<Bitmap> progress = new List<Bitmap>();
             pbProgress.Visible = true;
-            mr.ProgressChanged += (int done,int total) =>
+            maze.ProgressChanged += (int done, int total) =>
             {
-                progress.Add(mr.Visualize(new Size(8, 8)));
+                progress.Add(maze.Visualize(new Size(8, 8)));
                 pbProgress.Invoke((MethodInvoker)delegate()
                 {
                     pbProgress.Value = (int)(((double)done / (double)total) * 100);
@@ -40,27 +56,32 @@ namespace MazeGen
             };
             new Thread(delegate()
             {
-                mr.Generate();
+                maze.Generate();
             }) { IsBackground = true }.Start();
 
-            mr.Completed += () =>
+            maze.Completed += () =>
+            {
+                pbProgress.Invoke((MethodInvoker)delegate()
                 {
-                    pbProgress.Invoke((MethodInvoker)delegate()
+                    pbProgress.Visible = false;
+                });
+                new Thread(delegate()
+                {
+                    for (int i = 0; i < progress.Count; i++)
                     {
-                        pbProgress.Visible = false;
-                    });
-                    new Thread(delegate()
-                    {
-                        for (int i = 0; i < progress.Count; i++)
+                        picVisual.Invoke((MethodInvoker)delegate()
                         {
-                            picVisual.Invoke((MethodInvoker)delegate()
-                            {
-                                picVisual.Image = progress[i];
-                            });
-                            Thread.Sleep(25);
-                        }
-                    }) { IsBackground = true }.Start();
-                };
+                            picVisual.Image = progress[i];
+                        });
+                        Thread.Sleep(50);
+                    }
+                    this.Invoke((MethodInvoker)delegate()
+                    {
+                        ToggleButtonState(true);
+                    });
+                }) { IsBackground = true }.Start();
+            };
         }
+
     }
 }

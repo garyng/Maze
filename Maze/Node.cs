@@ -7,10 +7,13 @@ namespace MazeGen
 {
     public class Node
     {
+        private bool _isFrontier;
+        private List<ParentInfo> _parentInfo = new List<ParentInfo>();
         private bool _isBacktracked;
+
         private bool _isStart;
         private Point _pos;
-        private int _count = 4;
+        private const int _count = 4;
         private Node _down;
         private Node _up;
         private Node _right;
@@ -145,10 +148,6 @@ namespace MazeGen
             {
                 return _count;
             }
-            set
-            {
-                _count = value;
-            }
         }
         public int Wall
         {
@@ -183,6 +182,10 @@ namespace MazeGen
                 _pos = value;
             }
         }
+
+        /// <summary>
+        /// For recursive backtracking
+        /// </summary>
         public bool isBacktracked
         {
             get
@@ -192,6 +195,38 @@ namespace MazeGen
             set
             {
                 _isBacktracked = value;
+            }
+        }
+
+        /// <summary>
+        /// For Prim's algorithm
+        /// A list of parents
+        /// </summary>
+        public List<ParentInfo> parentInfo
+        {
+            get
+            {
+                return _parentInfo;
+            }
+            set
+            {
+                _parentInfo = value;
+            }
+        }
+
+        /// <summary>
+        /// For Prim's AQlgorithm
+        /// Mark a node as frontier
+        /// </summary>
+        public bool isFrontier
+        {
+            get
+            {
+                return _isFrontier;
+            }
+            set
+            {
+                _isFrontier = value;
             }
         }
     }
