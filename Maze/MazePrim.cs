@@ -13,6 +13,7 @@ namespace MazeGen
 {
     public class MazePrim : Maze
     {
+        
         public MazePrim(List<List<Node>> nodes)
             : base(nodes)
         {
@@ -82,5 +83,12 @@ namespace MazeGen
             OnComplete();
         }
 
+        public override string Name
+        {
+            get
+            {
+                return "Prim's Algorithm";
+            }
+        }
     }
 }

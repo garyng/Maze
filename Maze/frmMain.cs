@@ -19,28 +19,30 @@ namespace MazeGen
             InitializeComponent();
         }
 
-        List<Button> _buttons = new List<Button>();
+        List<Control> _controls = new List<Control>();
+        List<string> _mazeAlgo = new List<string>()
+        {
+            "Recursive Backtracker",
+            "Prim's Algorithm"
+        };
+
         private void frmMain_Load(object sender, EventArgs e)
         {
-            _buttons.Add(btnGenPrim);
-            _buttons.Add(btnGenRec);
+            _controls.Add(sntHeight);
+            _controls.Add(sntWidth);
+            _controls.Add(btnGenerate);
+            _controls.Add(cbAlgo);
+
             sntHeight.Text = "10";
             sntWidth.Text = "10";
+
+            _mazeAlgo.ForEach(item => cbAlgo.Items.Add(item));
+            cbAlgo.SelectedIndex = 0;
         }
 
         void ToggleButtonState(bool isEnabled)
         {
-            _buttons.ForEach(item => item.Enabled = isEnabled);
-        }
-
-        private void btnGenRec_Click(object sender, EventArgs e)
-        {
-            VisualizeMaze(new MazeRec(Convert.ToInt32(sntWidth.Text), Convert.ToInt32(sntHeight.Text)));
-        }
-
-        private void btnGenPrim_Click(object sender, EventArgs e)
-        {
-            VisualizeMaze(new MazePrim(Convert.ToInt32(sntWidth.Text), Convert.ToInt32(sntHeight.Text)));
+            _controls.ForEach(item => item.Enabled = isEnabled);
         }
 
         private void VisualizeMaze(Maze maze)
@@ -66,6 +68,7 @@ namespace MazeGen
                 pbProgress.Invoke((MethodInvoker)delegate()
                 {
                     pbProgress.Visible = false;
+                    pbProgress.Value = 0;
                 });
                 new Thread(delegate()
                 {
@@ -83,6 +86,19 @@ namespace MazeGen
                     });
                 }) { IsBackground = true }.Start();
             };
+        }
+
+        private void btnGenerate_Click(object sender, EventArgs e)
+        {
+            switch (cbAlgo.SelectedIndex)
+            {
+                case 0:
+                    VisualizeMaze(new MazeRec(Convert.ToInt32(sntWidth.Text), Convert.ToInt32(sntHeight.Text)));
+                    break;
+                case 1:
+                    VisualizeMaze(new MazePrim(Convert.ToInt32(sntWidth.Text), Convert.ToInt32(sntHeight.Text)));
+                    break;
+            }
         }
 
     }

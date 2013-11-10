@@ -142,5 +142,13 @@ namespace MazeGen
             }
         }
 
+        public virtual string Name
+        {
+            get
+            {
+                return "";
+            }
+        }
+
     }
 }

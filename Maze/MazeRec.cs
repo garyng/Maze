@@ -93,5 +93,13 @@ namespace MazeGen
 
             OnComplete();
         }
+
+        public override string Name
+        {
+            get
+            {
+                return "Recursive Backtracker";
+            }
+        }
     }
 }
