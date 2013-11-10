@@ -184,7 +184,7 @@ namespace MazeGen
         }
 
         /// <summary>
-        /// For recursive backtracking
+        /// For recursive backtracking and Growing Tree
         /// </summary>
         public bool isBacktracked
         {

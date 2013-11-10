@@ -18,6 +18,7 @@ namespace MazeGen
         public event ProgressChangedEventHandler ProgressChanged;
         public event DoneEventHandler Completed;
 
+        private int _selIndex = 0;
         private List<List<Node>> _nodes = new List<List<Node>>();
 
         public Maze(List<List<Node>> nodes)
@@ -150,5 +151,19 @@ namespace MazeGen
             }
         }
 
+        /// <summary>
+        /// For Growing Tree Algorithm
+        /// </summary>
+        public int SelectionMethod
+        {
+            get
+            {
+                return _selIndex;
+            }
+            set
+            {
+                _selIndex = value;
+            }
+        }
     }
 }

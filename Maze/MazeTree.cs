@@ -11,42 +11,64 @@ using System.Drawing.Imaging;
 
 namespace MazeGen
 {
-    /// <summary>
-    /// Recursive Backtracking - Maze Generation
-    /// </summary>
-    public class MazeRec : Maze
+    public class MazeTree : Maze
     {
-        public MazeRec(List<List<Node>> nodes)
+        
+        public MazeTree(List<List<Node>> nodes)
             : base(nodes)
         {
         }
-
         /// <summary>
         /// Initialize a new 2d array of nodes
         /// </summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        public MazeRec(int width, int height)
+        public MazeTree(int width, int height)
             : base(width, height)
         {
         }
 
         public override void Generate()
         {
-            int visitedCount = 1;
             int total = this.Nodes.Count * this.Nodes[0].Count;
-            Stack<Node> visitedCell = new Stack<Node>();
+            int visited = 1;
 
+
+            List<Node> cells = new List<Node>();
             Random r = new Random();
-            //Node current = this.Nodes[r.Next(this.Nodes.Count-1)][r.Next(this.Nodes[0].Count-1)];
-            Node current = this.Nodes[(int)(r.NextDouble() * this.Nodes.Count * 10) % this.Nodes.Count][(int)(r.NextDouble() * this.Nodes[0].Count * 10) % this.Nodes.Count];
-            current.isStart = true;
+            cells.Add(this.Nodes[(int)(r.NextDouble() * 10) % this.Nodes.Count][(int)(r.NextDouble() * 10) % this.Nodes[0].Count]);
+            cells[0].isStart = true;
 
-            //Node end = this.End.X == -1 ? this.Nodes[(int)(r.NextDouble() * this.Nodes.Count * 10) % this.Nodes.Count][(int)(r.NextDouble() * this.Nodes[0].Count * 10) % this.Nodes.Count] : this.Nodes[this.End.X][this.End.Y];
-            //end.isEnd = true;
+            //Selection method
+            //0 = Lastest
+            //1 = Oldest
+            //2 = Random
 
-            while (visitedCount < total)
+            //default = 0
+            Func<Node> selMethod = () =>
+                        {
+                            return cells.Last();
+                        };
+            switch (this.SelectionMethod)
             {
+                case 1:
+                    selMethod = () =>
+                        {
+                            return cells[0];
+                        };
+                    break;
+                case 2:
+                    selMethod = () =>
+                        {
+                            return cells[(int)(r.NextDouble() * 10) % cells.Count];
+                        };
+                    break;
+            }
+
+            while (cells.Count > 0)
+            {
+                Node current = selMethod();
+
                 //List all available neighbour cells
                 List<Node> readyNeighbourCells = new List<Node>();
                 //Store the index of the neighbour cells
@@ -58,14 +80,14 @@ namespace MazeGen
                         readyNeighbourCells.Add(current[i]);
                         readyNeighbourCellsIndex.Add(i);
                     }
-
                 }
+
                 //no cells found
                 if (readyNeighbourCells.Count == 0)
                 {
-                    current = visitedCell.Pop();
                     current.isBacktracked = true;
-                    OnProgressChanged(visitedCount, total);
+                    cells.Remove(current);
+                    OnProgressChanged(visited, total);
                     continue;
                 }
 
@@ -78,19 +100,9 @@ namespace MazeGen
                 // 0-2 1-3
                 current.UnWall(index);
                 neighbour.UnWall((index + 2) % 4);
-                visitedCell.Push(neighbour);
-                current = neighbour;
-                visitedCount++;
-
-                OnProgressChanged(visitedCount, total);
-            }
-
-            //Backtrack to start point
-            while (visitedCell.Count>0)
-            {
-                 current = visitedCell.Pop();
-                 current.isBacktracked = true;
-                 OnProgressChanged(visitedCount, total);
+                OnProgressChanged(visited, total);
+                cells.Add(neighbour);
+                visited++;
             }
 
             OnComplete();
@@ -100,8 +112,9 @@ namespace MazeGen
         {
             get
             {
-                return "Recursive Backtracker";
+                return "Growing Tree Algorithm";
             }
         }
+
     }
 }

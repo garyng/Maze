@@ -23,7 +23,15 @@ namespace MazeGen
         List<string> _mazeAlgo = new List<string>()
         {
             "Recursive Backtracker",
-            "Prim's Algorithm"
+            "Prim's Algorithm",
+            "Growing Tree Algorithm"
+        };
+
+        List<string> _cellSelMethod = new List<string>()
+        {
+            "Latest",
+            "Oldest",
+            "Random"
         };
 
         private void frmMain_Load(object sender, EventArgs e)
@@ -32,12 +40,24 @@ namespace MazeGen
             _controls.Add(sntWidth);
             _controls.Add(btnGenerate);
             _controls.Add(cbAlgo);
+            _controls.Add(cbSelMet);
+            _controls.Add(sntCellHeight);
+            _controls.Add(sntCellWidth);
+            _controls.Add(sntInterval);
 
             sntHeight.Text = "10";
             sntWidth.Text = "10";
 
+            sntCellWidth.Text = "8";
+            sntCellHeight.Text = "8";
+
+            sntInterval.Text = "50";
+
             _mazeAlgo.ForEach(item => cbAlgo.Items.Add(item));
             cbAlgo.SelectedIndex = 0;
+
+            _cellSelMethod.ForEach(item => cbSelMet.Items.Add(item));
+            cbSelMet.SelectedIndex = 0;
         }
 
         void ToggleButtonState(bool isEnabled)
@@ -45,14 +65,17 @@ namespace MazeGen
             _controls.ForEach(item => item.Enabled = isEnabled);
         }
 
-        private void VisualizeMaze(Maze maze)
+        private void VisualizeMaze(Maze maze, int selectMethod = -1)
         {
+            int interval = Convert.ToInt32(sntInterval.Text);
+            Size cellSz = new Size(Convert.ToInt32(sntCellWidth.Text), Convert.ToInt32(sntCellHeight.Text));
+
             ToggleButtonState(false);
             List<Bitmap> progress = new List<Bitmap>();
             pbProgress.Visible = true;
             maze.ProgressChanged += (int done, int total) =>
             {
-                progress.Add(maze.Visualize(new Size(8, 8)));
+                progress.Add(maze.Visualize(cellSz));
                 pbProgress.Invoke((MethodInvoker)delegate()
                 {
                     pbProgress.Value = (int)(((double)done / (double)total) * 100);
@@ -60,7 +83,12 @@ namespace MazeGen
             };
             new Thread(delegate()
             {
+                cbSelMet.Invoke((MethodInvoker)delegate()
+                {
+                    maze.SelectionMethod = cbSelMet.SelectedIndex;
+                });
                 maze.Generate();
+
             }) { IsBackground = true }.Start();
 
             maze.Completed += () =>
@@ -78,7 +106,7 @@ namespace MazeGen
                         {
                             picVisual.Image = progress[i];
                         });
-                        Thread.Sleep(50);
+                        Thread.Sleep(interval);
                     }
                     this.Invoke((MethodInvoker)delegate()
                     {
@@ -98,6 +126,20 @@ namespace MazeGen
                 case 1:
                     VisualizeMaze(new MazePrim(Convert.ToInt32(sntWidth.Text), Convert.ToInt32(sntHeight.Text)));
                     break;
+                case 2:
+                    VisualizeMaze(new MazeTree(Convert.ToInt32(sntWidth.Text), Convert.ToInt32(sntHeight.Text)),cbSelMet.SelectedIndex);
+                    break;
+            }
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.FileName = "maze.png";
+            sfd.Filter = "PNG|*PNG";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                picVisual.Image.Save(sfd.FileName, ImageFormat.Png);
             }
         }
 
