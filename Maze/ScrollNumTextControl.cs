@@ -113,33 +113,31 @@ namespace System.Windows.Forms
 
 			this.KeyDown += delegate(object s, KeyEventArgs ev)
 			{
-				if (!(ev.KeyCode == Keys.Back || char.IsDigit((char)ev.KeyCode)))
-				{
-					ev.SuppressKeyPress = true;
-				}
-			};
-		}
-
-		public override string Text
-		{
-			get
-			{
-				return base.Text;
-			}
-			set
-			{
-				long num;
-				if (long.TryParse(base.Text, out num))
-				{
-					base.Text = value;
-				}
-				else
-				{
-					base.Text = "0";
-				}
-
-			}
-		}
+                bool controlKeys = ev.KeyCode == Keys.Left || ev.KeyCode == Keys.Right || ev.KeyCode == Keys.End || ev.KeyCode == Keys.Delete || ev.KeyCode == Keys.Home;
+                if (!(controlKeys || ev.KeyCode == Keys.Back || char.IsDigit((char)ev.KeyCode)))
+                {
+                    ev.SuppressKeyPress = true;
+                }
+            };
+            this.KeyUp += delegate(object s, KeyEventArgs ev)
+            {
+                if (char.IsDigit((char)ev.KeyCode))
+                {
+                    long num;
+                    if (long.TryParse(this.Text, out num))
+                    {
+                        if (num > _max)
+                        {
+                            base.Text = _max.ToString();
+                        }
+                        else if (num < _min)
+                        {
+                            base.Text = _min.ToString();
+                        }
+                    }
+                }
+            };
+        }
 
         public int Max
         {
@@ -165,5 +163,6 @@ namespace System.Windows.Forms
             }
         }
 	}
+
 
 }

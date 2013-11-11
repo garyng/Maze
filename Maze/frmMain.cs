@@ -83,11 +83,14 @@ namespace MazeGen
             };
             new Thread(delegate()
             {
-                cbSelMet.Invoke((MethodInvoker)delegate()
+                using (maze)
                 {
-                    maze.SelectionMethod = cbSelMet.SelectedIndex;
-                });
-                maze.Generate();
+                    cbSelMet.Invoke((MethodInvoker)delegate()
+                    {
+                        maze.SelectionMethod = cbSelMet.SelectedIndex;
+                    });
+                    maze.Generate();
+                }
 
             }) { IsBackground = true }.Start();
 
@@ -105,9 +108,11 @@ namespace MazeGen
                         picVisual.Invoke((MethodInvoker)delegate()
                         {
                             picVisual.Image = progress[i];
+
                         });
                         Thread.Sleep(interval);
                     }
+
                     this.Invoke((MethodInvoker)delegate()
                     {
                         ToggleButtonState(true);
