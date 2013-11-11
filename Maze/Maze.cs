@@ -11,7 +11,7 @@ using System.Drawing.Imaging;
 
 namespace MazeGen
 {
-    public abstract class Maze
+    public abstract class Maze : IDisposable
     {
         public delegate void ProgressChangedEventHandler(int done, int total);
         public delegate void DoneEventHandler();
@@ -163,6 +163,19 @@ namespace MazeGen
             set
             {
                 _selIndex = value;
+            }
+        }
+
+        public void Dispose()
+        {
+            
+        }
+
+        protected virtual void Dispose(bool isDisposing)
+        {
+            if (isDisposing)
+            {
+                _nodes = null;
             }
         }
     }

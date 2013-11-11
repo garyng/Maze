@@ -113,7 +113,8 @@ namespace System.Windows.Forms
 
 			this.KeyDown += delegate(object s, KeyEventArgs ev)
 			{
-				if (!(ev.KeyCode == Keys.Back || char.IsDigit((char)ev.KeyCode)))
+                bool controlKeys = ev.KeyCode == Keys.Left || ev.KeyCode == Keys.Right || ev.KeyCode == Keys.End || ev.KeyCode == Keys.Delete || ev.KeyCode == Keys.Home;
+                if (!(controlKeys || ev.KeyCode == Keys.Back || char.IsDigit((char)ev.KeyCode)))
 				{
 					ev.SuppressKeyPress = true;
 				}
